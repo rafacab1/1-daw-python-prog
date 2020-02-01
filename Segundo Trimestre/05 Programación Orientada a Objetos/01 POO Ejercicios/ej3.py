@@ -76,13 +76,13 @@ class Fecha:
             if c < '0' or c > '9':
                 return False
         # El mes tiene que estar entre 1 y 12
-        mes_ = self.fecha.mes(self.fecha)
+        mes_ = Fecha.mes(self.fecha)
         if mes_ < 1 or mes_ > 12:
             return False
         # Si es año bisiesto el nº de días de febrero es 29.
         # Llamo a una función que me actualiza el nº de días de febrero si es bisiesto
-        dias_mes_este_anyo = self.fecha.dias_mes_anyo(self.fecha)
-        dia_ = self.fecha.dia(self.fecha)
+        dias_mes_este_anyo = Fecha.dias_mes_anyo(self.fecha)
+        dia_ = Fecha.dia(self.fecha)
         # esta expresión lógica la permite python, equivale a:
         #   dia_>0 and dia_<=dias_mes_este_año[mes_-1]
         return 0 < dia_ <= dias_mes_este_anyo[mes_ - 1]  # restamos 1 al mes para que esté entre 0 y 11
@@ -100,10 +100,10 @@ class Fecha:
         - fecha_mas_1dia("20170228")
         '20170301'
         """
-        dia_ = self.fecha.dia(self.fecha)
-        mes_ = self.fecha.mes(self.fecha)
-        anyo_ = self.fecha.anyo(self.fecha)
-        dias_mes_este_anyo = self.fecha.dias_mes_anyo(self.fecha)
+        dia_ = Fecha.dia(self)
+        mes_ = Fecha.mes(self.fecha)
+        anyo_ = Fecha.anyo(self.fecha)
+        dias_mes_este_anyo = Fecha.dias_mes_anyo(self.fecha)
 
         # aumentamos el día
         ultimo_dia_mes = dias_mes_este_anyo[mes_ - 1]
@@ -115,7 +115,7 @@ class Fecha:
             if mes_ > 12:  # nos pasamos de diciembre, año siguiente
                 mes_ = 1
                 anyo_ += 1
-        return self.fecha.fecha(dia_, mes_, anyo_)
+        return Fecha.fecha(dia_, mes_, anyo_)
 
     def fecha_mas_n_dias(self, dias_):
         """
@@ -131,13 +131,13 @@ class Fecha:
         - fecha_mas_n_dias("20160228", -5)
         '20160223'
         """
-        fecha2 = self.fecha
+        fecha2 = self
         if dias_ >= 0:
             for i in range(dias_):
-                fecha2 = self.fecha.fecha_mas_1dia(fecha2)
+                fecha2 = Fecha.fecha_mas_1dia(fecha2)
         else:
             for i in range(abs(dias_)):
-                fecha2 = self.fecha.fecha_menos_1dia(fecha2)
+                fecha2 = Fecha.fecha_menos_1dia(fecha2)
         return fecha2
 
     def fecha_menos_1dia(self):
@@ -153,10 +153,10 @@ class Fecha:
         - fecha_menos_1dia("20170301")
         '20170228'
         """
-        dia_ = self.fecha.dia(self.fecha)
-        mes_ = self.fecha.mes(self.fecha)
-        anyo_ = self.fecha.anyo(self.fecha)
-        dias_mes_este_anyo = self.fecha.dias_mes_anyo(self.fecha)
+        dia_ = Fecha.dia(self.fecha)
+        mes_ = Fecha.mes(self.fecha)
+        anyo_ = Fecha.anyo(self.fecha)
+        dias_mes_este_anyo = Fecha.dias_mes_anyo(self.fecha)
         # disminuimos el día
         dia_ -= 1
         if dia_ == 0:  # mes anterior y último día de mes
@@ -165,7 +165,7 @@ class Fecha:
                 mes_ = 12
                 anyo_ -= 1
             dia_ = dias_mes_este_anyo[mes_ - 1]  # último día del mes anterior
-        return self.fecha.fecha(dia_, mes_, anyo_)
+        return Fecha.fecha(dia_, mes_, anyo_)
 
     def fecha_menos_n_dias(self, dias_):
         """
@@ -184,10 +184,10 @@ class Fecha:
         fecha2 = self.fecha
         if dias_ >= 0:
             for i in range(dias_):
-                fecha2 = self.fecha.fecha_menos_1dia(fecha2)
+                fecha2 = Fecha.fecha_menos_1dia(fecha2)
         else:
             for i in range(abs(dias_)):
-                fecha2 = self.fecha.fecha_mas_1dia(fecha2)
+                fecha2 = Fecha.fecha_mas_1dia(fecha2)
         return fecha2
 
     def es_bisiesto(self):
@@ -207,7 +207,7 @@ class Fecha:
         - es_bisiesto("01021900") # múltiplo de 4 pero acaba en 00 y no es múltiplo de 400
         False
         """
-        anyo_ = self.fecha.anyo(self.fecha)
+        anyo_ = Fecha.anyo(self)
         return anyo_ % 4 == 0 and (anyo_ % 100 != 0 or anyo_ % 400 == 0)
 
     def compara_fechas(self, fecha2):
@@ -241,9 +241,9 @@ class Fecha:
         - fecha_formateada("20191215")
         '15 de Diciembre de 2019'
         """
-        dia_ = self.fecha.dia(self.fecha)
-        anyo_ = self.fecha.anyo(self.fecha)
-        return str(dia_) + " de " + self.fecha.nombre_mes(self.fecha) + " de " + str(anyo_)
+        dia_ = Fecha.dia(self.fecha)
+        anyo_ = Fecha.anyo(self.fecha)
+        return str(dia_) + " de " + Fecha.nombre_mes(self.fecha) + " de " + str(anyo_)
 
     def anyo(self):
         """
@@ -256,7 +256,7 @@ class Fecha:
         - año("20200106")
         2020
         """
-        return int(self.fecha[0:4])
+        return int(self[0:4])
 
     def mes(self):
         """
@@ -269,7 +269,7 @@ class Fecha:
         - mes("20200106")
         1
         """
-        return int(self.fecha[4:6])
+        return int(self[4:6])
 
     def nombre_mes(self):
         """
@@ -284,7 +284,7 @@ class Fecha:
         """
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
                  "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        mes_ = self.fecha.mes(self.fecha)
+        mes_ = Fecha.mes(self)
         return meses[mes_ - 1]
 
     def dia(self):
@@ -298,7 +298,8 @@ class Fecha:
         - dia("20200106")
         6
         """
-        return int(self.fecha[6:8])
+        fechafuncion = str(self)[6:8]
+        return int(fechafuncion)
 
     @staticmethod
     def fecha(d, m, a):
@@ -341,6 +342,6 @@ class Fecha:
         [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         """
         dias_mes_este_anyo = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        if self.fecha.es_bisiesto(self.fecha):
+        if Fecha.es_bisiesto(self):
             dias_mes_este_anyo[1] += 1  # hay 29 días en febrero en este caso
         return dias_mes_este_anyo
