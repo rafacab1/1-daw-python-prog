@@ -1,0 +1,1 @@
+Fichero de prueba para encriptar con ejercicio02 y el método César
